@@ -1,6 +1,7 @@
 # python
 **/env
 **/*.pyc
+**/__pycache__
 
 # Private
-other
+/other
