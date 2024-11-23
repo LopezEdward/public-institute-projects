@@ -1,12 +1,9 @@
 package tree;
 
-import exceptions.HasChildNodeException;
 import node.BiDirectionalNode;
 import node.interfaces.BinaryNode;
-import node.interfaces.Node;
 import node.type.NodeType;
 import tree.interfaces.BinaryDataTree;
-import tree.interfaces.DataTree;
 import tree.transversal.TreePrintOrder;
 
 import java.util.*;
@@ -123,21 +120,21 @@ public class BinaryTree<T extends Number & Comparable<T>> implements BinaryDataT
 
     @Override
     public void putNodeToLeft(BinaryNode<T> node) {
+        if (this.treeNodes.contains(node)) return;
+
         if (this.leftLastNode != null && !this.leftLastNode.hasLeftNode()) {
             this.leftLastNode.setLeftNode(node);
             this.leftLastNode = node;
             return;
         }
 
-        boolean hasReaming = true;
         BinaryNode<T> lastNode = null;
         BinaryNode<T> target = null;
 
-        while (hasReaming) {
+        while (true) {
             if (lastNode != null) {
                 if (!lastNode.hasLeftNode()) {
                     target = lastNode;
-                    hasReaming = false;
                     break;
                 }
 
@@ -150,21 +147,23 @@ public class BinaryTree<T extends Number & Comparable<T>> implements BinaryDataT
 
         target.setLeftNode(node);
         this.leftLastNode = node;
+        this.treeNodes.add(node);
     }
 
     @Override
     public void putNodeToRight(BinaryNode<T> node) {
+        if (this.treeNodes.contains(node)) return;
+
         if (this.rightLastNode != null && !this.rightLastNode.hasRightNode()) {
             this.rightLastNode.setRightNode(node);;
             this.rightLastNode = node;
             return;
         }
 
-        boolean hasReaming = true;
         BinaryNode<T> lastNode = null;
         BinaryNode<T> target = null;
 
-        while (hasReaming) {
+        while (true) {
             if (lastNode != null) {
                 if (!lastNode.hasRightNode()) {
                     target = lastNode;
@@ -180,18 +179,21 @@ public class BinaryTree<T extends Number & Comparable<T>> implements BinaryDataT
 
         target.setRightNode(node);
         this.rightLastNode = node;
+        this.treeNodes.add(node);
     }
 
-    public void putNodeToLeft(BinaryNode<T> node, BinaryNode<T> targetNode, boolean replaceChild)  {
+    public void putNodeToLeft(BinaryNode<T> node, BinaryNode<T> targetNode, boolean replaceChild) throws NullPointerException {
         if (targetNode.hasLeftNode() && !replaceChild) return;
+        if (node == null) throw new NullPointerException("The node is null!");
 
         targetNode.setLeftNode(node);
 
         if (targetNode.equals(this.leftLastNode)) this.leftLastNode = node;
     }
 
-    public void putNodeToRight(BinaryNode<T> node, BinaryNode<T> targetNode, boolean replaceChild) {
+    public void putNodeToRight(BinaryNode<T> node, BinaryNode<T> targetNode, boolean replaceChild) throws NullPointerException {
         if (targetNode.hasRightNode() && !replaceChild) return;
+        if (node == null) throw new NullPointerException("The node is null!");
 
         targetNode.setRightNode(node);
 
@@ -233,14 +235,56 @@ public class BinaryTree<T extends Number & Comparable<T>> implements BinaryDataT
 
     @Override
     public BinaryNode<T> putNodeToRight(T data) {
-        return null;
+        BinaryNode<T> newNode = new BiDirectionalNode<>(data);
+
+        if (this.rightLastNode != null && !this.rightLastNode.hasLeftNode()) {
+            this.rightLastNode.setRightNode(newNode);
+            this.rightLastNode = newNode;
+            return newNode;
+        }
+
+        BinaryNode<T> lastNode = null;
+        BinaryNode<T> target = null;
+
+        while (true) {
+            if (lastNode != null) {
+                if (!lastNode.hasRightNode()) {
+                    target = lastNode;
+                    break;
+                }
+
+                lastNode = lastNode.getRightNode();
+                continue;
+            }
+
+            lastNode = this.rootNode.getRightNode();
+        }
+
+        target.setLeftNode(newNode);
+        this.leftLastNode = newNode;
+
+        return newNode;
     }
 
-    public BinaryNode<T> putNodeToLeft(T data, BinaryNode<T> targetNode, boolean replaceChild) {
-        return null;
+    public Optional<BinaryNode<T>> putNodeToLeft(T data, BinaryNode<T> targetNode, boolean replaceChild) {
+        if (targetNode.hasLeftNode() && !replaceChild) return Optional.empty();
+
+        BinaryNode<T> node = new BiDirectionalNode<>(data);
+        targetNode.setLeftNode(node);
+
+        if (targetNode.equals(this.leftLastNode)) this.leftLastNode = node;
+
+        return Optional.of(node);
     }
 
-    public BinaryNode<T> putNodeToRight(T data, BinaryNode<T> targetNode, boolean replaceChild) {
-        return null;
+    public Optional<BinaryNode<T>> putNodeToRight(T data, BinaryNode<T> targetNode, boolean replaceChild) {
+        if (targetNode.hasRightNode() && !replaceChild) return Optional.empty();
+
+        BinaryNode<T> node = new BiDirectionalNode<>(data);
+        targetNode.setRightNode(node);
+
+        if (targetNode.equals(this.rightLastNode)) this.rightLastNode = node;
+
+        return Optional.of(node);
     }
 }
