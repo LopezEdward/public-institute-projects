@@ -2,7 +2,6 @@ package node;
 
 import node.builder.BuilderNode;
 import node.interfaces.BinaryNode;
-import node.print.NodePrintable;
 import node.type.NodeType;
 
 import java.util.function.Consumer;
