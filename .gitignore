@@ -5,3 +5,20 @@
 
 # Private
 /other
+
+# Android Studio
+s5/**/*.iml
+s5/**/.gradle
+s5/**/local.properties
+s5/**/.idea/caches
+s5/**/.idea/libraries
+s5/**/.idea/modules.xml
+s5/**/.idea/workspace.xml
+s5/**/.idea/navEditor.xml
+s5/**/.idea/assetWizardSettings.xml
+s5/**/.DS_Store
+s5/**/build
+s5/**/captures
+s5/**/.externalNativeBuild
+s5/**/.cxx
+s5/**/local.properties
